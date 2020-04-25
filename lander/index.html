@@ -1,0 +1,108 @@
+<html>
+  <body>
+
+    <style>
+      #outgoing {
+        width: 600px;
+        word-wrap: break-word;
+        white-space: normal;
+      }
+    </style>
+
+    <form>
+      <textarea id="incoming"></textarea>
+      <button type="submit">submit</button>
+    </form>
+    <pre id="outgoing"></pre>
+
+    <script src="../simplepeer/simplepeer.min.js"></script>
+    <script src="./extensions/api/main.js"></script>
+    <script>
+        // Generate random room name if needed
+        if (!location.hash) {
+          location.hash = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+        }
+
+        const id = location.hash.substring(1);
+        var peers = [];
+
+        var loopcount = 0;
+        var online_dict = {};
+
+        navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true
+        });
+
+        // register self as online
+        sendPost('http://127.0.0.1/lander/room/write.php', 'id=' + id + '&type=register');
+
+        var cycle = setInterval(function(){         
+          // get online users
+          var online = getText('http://127.0.0.1/lander/room/online.txt');
+          online = online.replace('$online=', '');
+          online = eval(online);
+
+          // write them to a dict, if its the first loop
+          if (loopcount == 0) {
+            online.forEach(element => {
+              online_dict[element] = 'first';
+            });
+          } else {
+            online.forEach(element => {
+              if (online_dict[element] != true) {
+                online_dict[element] = false;
+              }
+            });
+          }
+          online_dict[id] = true;
+
+          // loop trough online, and connect to user, if connection is not existing
+          // Needs to be executed once, before other users can connect!
+          // ToDo: Execute immediately
+          online.forEach(element => {
+            if (online_dict[element] != true) {
+              if (loopcount == 0 || online_dict[element] == 'first') {
+                var initiator = true;
+              } else {
+                var initiator = false;
+              }
+              var pc = createPeer(id, element, initiator);
+
+              pc.on('stream', stream => {
+                var video = document.getElementById('free_' + peers.length);
+                if ('srcObject' in video) {
+                  video.srcObject = stream;
+                } else {
+                  video.src = window.URL.createObjectURL(stream); // for older browsers
+                }
+                video.play();
+              });
+
+              peers.push(pc);
+              online_dict[element] = true;
+            }
+          });
+          loopcount++;
+        }, 5000);
+    </script>
+    <div id="livestream" style="display: flex;">
+      <div>
+        <video id="self"></video>
+      </div>
+      <div>
+        <video id="free_1"></video>
+      </div>
+      <div>
+        <video id="free_2"></video>
+      </div>
+      <div>
+        <video id="free_3"></video>
+      </div>
+      <div>
+        <video id="free_4"></video>
+      </div>
+    </div>
+
+  </body>
+</html>
