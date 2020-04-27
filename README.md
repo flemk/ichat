@@ -2,7 +2,11 @@
 >
 >Using `write.php` it is possible for attackers to takeover your filesystem.
 
-==This project is not finished yet. The p2p connection can not be enabled stable. This is to be done in the next step.==
+``` 
+This project is not finished yet.
+The p2p connection can not be enabled stable.
+This is to be done in the next step.
+```
 
 # ichat 
 ###### Distance dependent dynamic immersive voice and video chat 
