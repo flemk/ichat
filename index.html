@@ -16,6 +16,8 @@
             }
             var api = new JitsiMeetExternalAPI(domain, options);
 
+            api.executeCommand('toggleTileView');
+
             // Defining message transfer
             function incomingEndpointMessageListener(object) {
                 //console.log('RECEIVING', object);
@@ -23,9 +25,13 @@
                 //console.log('Y', object.data.eventData.text.y);
 
                 var id_from = object.data.senderInfo.id;
-
-                var obj = document.querySelector('#participant_' + id_from + ' > video');
-                obj.volume = 5;
+                
+                // get obj audio
+                
+                var s = document.querySelector('[id*=' + JSON.stringify(id_from) + ']')
+                console.log('[id*=' + JSON.stringify(id_from) + ']');
+                var obj = s.children[1];
+                obj.volume = 2;
             }
 
             function outgoingMessageListener(object) {
@@ -41,10 +47,10 @@
                 // Send to each user current position
                 var own_id = '';
                 var online = api._participants;
-                console.log('PARTICIPANTS', online)
+                //console.log('PARTICIPANTS', online)
                 
                 for (var element in online) {
-                    console.log('SENDING', element)
+                    //console.log('SENDING', element)
                     api.executeCommand('sendEndpointTextMessage', element, {x: 100, y: 100});
                 }
             }, 5000);

@@ -1,11 +1,5 @@
->:warning: **massive security risks!**
->
->Using `write.php` it is possible for attackers to takeover your filesystem.
-
 ``` 
 This project is not finished yet.
-The p2p connection can not be enabled stable.
-This is to be done in the next step.
 ```
 
 # ichat 
@@ -17,7 +11,7 @@ So how do you control, that only certain users can hear you, but others in the s
 
 So, I've created a game, where you can control a dot on a 2D plane. Other dots represent other users in the same chatroom. You can only hear those users, whose dots are in a given range of your dot. The same can be applied for video images.
 
-hereby the simple-peer by https://github.com/feross/simple-peer in `./simplepeer` is used. Thanks a lot to them.
+Hereby Jitsi meet API s used. Thanks a lot to them.
 
 ## Future
 - [ ] Redesign `/room/write.php` for improving security. this contains register and message function.
